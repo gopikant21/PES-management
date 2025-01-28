@@ -4,6 +4,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Maximize2, Trash2, X } from "lucide-react";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 
 interface ClassDetail {
   class: string;
@@ -36,6 +38,40 @@ const SeatingPlanner: React.FC = () => {
   const [seatingPlan, setSeatingPlan] = useState<GroupStructure[]>([]);
   const [error, setError] = useState<string>("");
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
+
+  const handleDownloadPDF = async (): Promise<void> => {
+    const element = document.getElementById("seating-arrangement");
+  
+    if (!element) {
+      console.error("Element with ID 'seating-arrangement' not found");
+      return;
+    }
+  
+    try {
+      // Capture the element using html2canvas
+      const canvas = await html2canvas(element, { scale: 2 });
+  
+      // Get the canvas dimensions
+      const imgWidth = 297; // A4 width in mm (landscape)
+      const imgHeight = (canvas.height * imgWidth) / canvas.width;
+  
+      const pdf = new jsPDF("l", "mm", "a4"); // 'l' is for landscape orientation
+  
+      // Ensure the image fits within the page dimensions
+      pdf.addImage(
+        canvas.toDataURL("image/png"),
+        "PNG",
+        0,
+        0,
+        imgWidth,
+        imgHeight > 210 ? 210 : imgHeight // Ensure height fits within A4 landscape
+      );
+  
+      pdf.save("seating-arrangement.pdf");
+    } catch (error) {
+      console.error("Error generating PDF:", error);
+    }
+  };
 
   const addClass = (): void => {
     setClasses([
@@ -325,7 +361,7 @@ const SeatingPlanner: React.FC = () => {
                   {groups.map((group, index) => (
                     <div key={index} className="grid grid-cols-3 gap-2 mb-2">
                       <div className="font-bold flex items-center">
-                        Group {group.name}
+                        Row {group.name}
                       </div>
                       <Input
                         type="number"
@@ -346,7 +382,7 @@ const SeatingPlanner: React.FC = () => {
                   ))}
 
                   <Button onClick={addGroup} className="mt-2">
-                    Add Group
+                    Add Row
                   </Button>
                 </div>
 
@@ -366,6 +402,7 @@ const SeatingPlanner: React.FC = () => {
 
         {/* Output Section */}
         <div
+          
           className={`w-full ${
             isFullScreen ? "fixed inset-0 z-50 bg-white p-4" : "lg:w-2/3"
           }`}
@@ -374,22 +411,26 @@ const SeatingPlanner: React.FC = () => {
             <Card>
               <CardHeader className="flex flex-row items-center justify-between">
                 <CardTitle>Seating Arrangement</CardTitle>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  onClick={() => setIsFullScreen(!isFullScreen)}
-                >
-                  <Maximize2 className="h-4 w-4" />
-                </Button>
+                <div className="flex items-center justify-center gap-4">
+                    <Button onClick={handleDownloadPDF} variant="outline">
+                    Download PDF
+                    </Button>
+                  <button
+                    onClick={() => setIsFullScreen(!isFullScreen)}
+                    className="hover:bg-grey-100 p-2 bg-white rounded-md transition-colors"
+                  >
+                    <Maximize2 className="h-4 w-4" />
+                  </button>
+                </div>
               </CardHeader>
               <CardContent>
-                <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-4">
+                <div id="seating-arrangement" className="flex flex-wrap gap-4">
                   {seatingPlan.map((group, groupIndex) => (
-                    <div key={groupIndex}>
+                    <div key={groupIndex} className="flex-1 min-w-[300px]">
                       <h4 className="text-md font-bold mb-2">
-                        Group {group.name}
+                        Row {group.name}
                       </h4>
-                      <div className="space-y-4">
+                      <div className="flex flex-col gap-4">
                         {group.benches.map((bench, benchIndex) => (
                           <div
                             key={benchIndex}
@@ -398,11 +439,11 @@ const SeatingPlanner: React.FC = () => {
                             <div className="text-xs text-gray-500 mb-1">
                               Bench {benchIndex + 1}
                             </div>
-                            <div className="grid grid-cols-3 gap-2">
+                            <div className="flex gap-2">
                               {bench.map((student, seatIndex) => (
                                 <div
                                   key={seatIndex}
-                                  className="p-2 rounded text-center text-sm"
+                                  className="p-2 rounded text-center text-sm flex-1"
                                   style={{
                                     backgroundColor: student
                                       ? `hsl(${
