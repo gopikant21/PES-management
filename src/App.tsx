@@ -9,7 +9,7 @@ function App() {
     <Router>
       <div className="min-h-screen bg-background">
         <Navbar />
-        <main>
+        <main className='flex-1'>
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/seating" element={<SeatingPlanner />} />

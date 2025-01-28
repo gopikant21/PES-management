@@ -38,7 +38,10 @@ const SeatingPlanner: React.FC = () => {
   const [isFullScreen, setIsFullScreen] = useState<boolean>(false);
 
   const addClass = (): void => {
-    setClasses([...classes, { class: "", startNum: "", endNum: "", total: "" }]);
+    setClasses([
+      ...classes,
+      { class: "", startNum: "", endNum: "", total: "" },
+    ]);
   };
 
   const deleteClass = (index: number): void => {
@@ -59,7 +62,11 @@ const SeatingPlanner: React.FC = () => {
     setGroups(newGroups);
   };
 
-  const updateClass = (index: number, field: keyof ClassDetail, value: string): void => {
+  const updateClass = (
+    index: number,
+    field: keyof ClassDetail,
+    value: string
+  ): void => {
     const newClasses = [...classes];
     newClasses[index][field] = value;
     if (field === "startNum" || field === "endNum") {
@@ -114,7 +121,7 @@ const SeatingPlanner: React.FC = () => {
         }
       }
     }
-    
+
     return true;
   };
 
@@ -225,7 +232,9 @@ const SeatingPlanner: React.FC = () => {
     const success = placeStudents(0, allStudents, seatingStructure);
 
     if (!success) {
-      setError("Could not find a valid seating arrangement. This should not happen!");
+      setError(
+        "Could not find a valid seating arrangement. This should not happen!"
+      );
       return;
     }
 
@@ -280,14 +289,15 @@ const SeatingPlanner: React.FC = () => {
                         type="number"
                       />
                       <Input value={c.total} readOnly placeholder="Total" />
-                      <Button 
-                        variant="ghost" 
-                        size="icon"
-                        onClick={() => deleteClass(index)}
-                        className="h-10 w-10"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => deleteClass(index)}
+                          className="hover:bg-grey-100 p-2 bg-white rounded-md transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4 text-gray-500" />
+                        </button>
+                      </div>
                     </div>
                   ))}
 
@@ -324,14 +334,14 @@ const SeatingPlanner: React.FC = () => {
                         placeholder="Benches"
                         min="1"
                       />
-                      <Button
-                        variant="ghost"
-                        size="icon"
-                        onClick={() => deleteGroup(index)}
-                        className="h-10 w-10"
-                      >
-                        <X className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center justify-center">
+                        <button
+                          onClick={() => deleteGroup(index)}
+                          className="hover:bg-grey-100 p-2 bg-white rounded-md transition-colors"
+                        >
+                          <Trash2 className="h-4 w-4 text-gray-500" />
+                        </button>
+                      </div>
                     </div>
                   ))}
 
