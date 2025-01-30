@@ -11,9 +11,17 @@ import { GraduationCap, LayoutDashboard, Settings } from 'lucide-react';
 export function Navbar() {
   return (
     <div className="border-b">
-      <div className="flex h-16 items-center px-4">
+      <div className="flex h-16 items-center px-4 min-w-screen">
         <NavigationMenu>
           <NavigationMenuList>
+          <NavigationMenuItem>
+              <Link to="/random-seat-planning">
+                <NavigationMenuLink className={navigationMenuTriggerStyle()}>
+                  <LayoutDashboard className="mr-2 h-4 w-4" />
+                  Random seat planning
+                </NavigationMenuLink>
+              </Link>
+            </NavigationMenuItem>
             <NavigationMenuItem>
               <Link to="/">
                 <NavigationMenuLink className={navigationMenuTriggerStyle()}>

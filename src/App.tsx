@@ -3,6 +3,7 @@ import { Navbar } from './components/Navbar';
 import { Dashboard } from './components/Dashboard';
 import SeatingPlanner from './components/SeatingPlanner';
 import { Settings } from './components/Settings';
+import RandomSeatingPlanner from './components/RandomSeatPlanning';
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path="/" element={<Dashboard />} />
             <Route path="/seating" element={<SeatingPlanner />} />
+            <Route path="/random-seat-planning" element={<RandomSeatingPlanner />} />
             <Route path="/settings" element={<Settings />} />
           </Routes>
         </main>
